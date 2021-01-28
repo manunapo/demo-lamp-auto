@@ -1,0 +1,74 @@
+- 
+  name: 'Set up Local Server configs'
+  hosts: loadbalancer01
+  become: yes
+  tasks:
+    - name: Edit hostname
+      lineinfile:
+        path: /etc/hostname
+        regexp: "centos*" 
+        line: "{{ hostnamelb }}.{{ansible_host}}"
+        state: present
+        backup: yes
+    - name: Edit hosts
+      lineinfile:
+        path: /etc/hosts
+        regexp: '^127\.0\.0\.1'
+        line: "127.0.0.1 localhost {{ hostnamelb }}.{{ansible_host}}"
+        state: present
+        backup: yes
+    - name: "Reboot host and wait for it to restart"
+      reboot:
+        msg: "Reboot initiated by Ansible"
+        connect_timeout: 5
+        reboot_timeout: 600
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: whoami
+    - name: 'Install Apache Load Balancer dependencies'
+      vars:
+        packages:
+          - firewalld
+          - httpd
+      yum: 
+        name: '{{ packages }}'
+        state: present
+    - name: 'Copy httpd.conf with owner and permissions'
+      copy: 
+        remote_src: no
+        src: ./configs/loadbalancer/httpd.conf
+        dest: /etc/httpd/conf/httpd.conf
+        owner: root
+        group: root
+        mode: '0644'
+    - name: 'Modify httpd.conf accordingly'
+      replace:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: "Member-00{{ ansible_loop.index }}$"
+        replace: "{{ hostvars[item].ansible_host }}"
+        backup: yes
+      with_items: 
+        - "{{ groups['web-servers'] }}"
+      loop_control:
+        extended: yes
+    - name: 'Set up httpd - Update Listening IP'
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: 'Listen '
+        line: 'Listen {{ ansible_host }}:80'
+    - name: 'Reload service httpd, in all cases'
+      systemd:
+        name: httpd
+        state: restarted
+    - name: 'Enable firewalld'
+      service:
+        name: firewalld
+        state: reloaded
+        enabled: True
+    - name: 'Permit traffic in default zone for http service'
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+    - name: 'Reload firewalld'
+      command: firewall-cmd --reload

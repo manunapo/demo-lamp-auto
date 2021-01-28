@@ -1,5 +1,6 @@
 # Used for setting up local vms and repo
 hostname: 'centos-lamp-auto'
+hostnamelb: 'centos-lb-auto'
 gitrepo: 'https://github.com/manunapo/demo-lamp'
 
 

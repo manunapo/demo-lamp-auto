@@ -1,0 +1,31 @@
+- hosts: loadbalancer01
+  become: yes
+  tasks:
+    - name: 'Copy httpd.conf with owner and permissions'
+      copy: 
+        remote_src: no
+        src: ./configs/httpd.conf
+        dest: /etc/httpd/conf/httpd.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+- name: 'Modify httpd.conf accordingly'
+  hosts: loadbalancer01
+  become: yes
+  tasks:
+   -  name: 
+      # debug:
+      #   msg:
+      #     win_hostname:
+      #       name: "{{ ansible_loop.index }}"
+      # shell: "sed -i 's/Member-001/{{ hostvars[item].ansible_host }}/g' /etc/httpd/conf/httpd.conf"
+      replace:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: "Member-00{{ ansible_loop.index }}$"
+        replace: "{{ hostvars[item].ansible_host }}"
+        backup: yes
+      with_items: 
+        - "{{ groups['web-servers'] }}"
+      loop_control:
+        extended: yes
