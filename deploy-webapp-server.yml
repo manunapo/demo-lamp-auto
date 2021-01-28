@@ -1,24 +1,20 @@
 - 
-  name: Set up WebAPP Server
+  name: 'Set up Local Server configs'
   hosts: in-house
-  vars:
-    env: dev
-  vars_files:
-    - "./vars/{{ env }}.yml"
   become: yes
   tasks:
     - name: Edit hostname
       lineinfile:
         path: /etc/hostname
         regexp: "centos*" 
-        line: "{{ hostname }}"
+        line: "{{ hostname }}.{{ansible_host}}"
         state: present
         backup: yes
     - name: Edit hosts
       lineinfile:
         path: /etc/hosts
         regexp: '^127\.0\.0\.1'
-        line: "127.0.0.1 localhost {{ hostname }}"
+        line: "127.0.0.1 localhost {{ hostname }}.{{ansible_host}}"
         state: present
         backup: yes
     - name: "Reboot host and wait for it to restart"
@@ -29,6 +25,15 @@
         pre_reboot_delay: 0
         post_reboot_delay: 30
         test_command: whoami
+- 
+  name: 'Set up WebAPP Server'
+  hosts: web-servers
+  vars:
+    env: dev
+  vars_files:
+    - "./configs/{{ env }}.yml"
+  become: yes
+  tasks:
     - name: 'Install LAMP dependencies'
       vars:
         packages:
@@ -56,13 +61,8 @@
     - name: 'Set up httpd - Update Listening IP'
       lineinfile:
         path: /etc/httpd/conf/httpd.conf
-        regexp: '#Listen '
-        line: 'Listen {{ ansible_host }}:80'
-    - name: Set up httpd - 'Update Listening IP 2'
-      lineinfile:
-        path: /etc/httpd/conf/httpd.conf
         regexp: 'Listen '
-        line: '#Listen 80'
+        line: 'Listen {{ ansible_host }}:80'
     - name: 'Reload service httpd, in all cases'
       systemd:
         name: httpd

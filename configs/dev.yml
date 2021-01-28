@@ -1,0 +1,8 @@
+# Used for setting up local vms and repo
+hostname: 'centos-lamp-auto'
+gitrepo: 'https://github.com/manunapo/demo-lamp'
+
+
+# Used for creating and enabling ssh connection to AWS EC2
+username: devops
+devops_password: asdFF1234!

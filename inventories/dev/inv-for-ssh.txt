@@ -1,0 +1,19 @@
+
+# Local
+webserver01 ansible_host=192.168.1.8 ansible_user=osboxes ansible_ssh_pass=osboxes.org ansible_connection=ssh
+webserver02 ansible_host=192.168.1.12 ansible_user=osboxes ansible_ssh_pass=osboxes.org ansible_connection=ssh
+
+# AWS
+cloudwebserver01 ansible_host=ec2-54-207-212-142.sa-east-1.compute.amazonaws.com
+cloudwebserver02 ansible_host=ec2-52-67-147-154.sa-east-1.compute.amazonaws.com
+
+# For AWS hosts use:
+# ansible-playbook deploy-ssh-users.yml -i ./inventories/dev/inv-for-ssh.txt --user ec2-user --key-file ./pki/SSHforAnsible.pem -e "@./configs/dev.yml"
+#
+# For Local hosts use:
+# ansible-playbook deploy-ssh-users.yml -i ./inventories/dev/inv-for-ssh.txt -e "@configs/dev.yml" -K
+# password -> osboxes.org 
+
+[to-deploy-now]
+cloudwebserver01
+cloudwebserver02

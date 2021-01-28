@@ -1,8 +1,15 @@
 
-webapp01 ansible_host=192.168.1.18 ansible_user=osboxes ansible_ssh_pass=osboxes.org ansible_connection=ssh
-webapp02 ansible_host=192.168.1.11 ansible_user=osboxes ansible_ssh_pass=osboxes.org ansible_connection=ssh
+webserver01 ansible_host=192.168.1.18 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+webserver02 ansible_host=192.168.1.11 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+
+cloudwebserver01 ansible_host=18.228.48.199 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
 
 [in-house]
-webapp02
+webserver02
 
 [aws]
+cloudwebserver01
+
+[web-servers:children]
+in-house
+aws
