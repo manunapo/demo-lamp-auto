@@ -5,4 +5,6 @@ Also, there is the posibility to add a load balancer in from of (max 4) the web 
 
 Both application and automation code is hosted here and can be deployed within ansible playbook.
 
+This page will be updated with further details soon.
+
 ![alt text](https://github.com/manunapo/demo-lamp-auto/blob/master/Arquitecture.png?raw=true)
