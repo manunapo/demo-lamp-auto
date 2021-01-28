@@ -1,0 +1,1 @@
+This repo will contain ansible automatization code for deploying demo-lamp application
