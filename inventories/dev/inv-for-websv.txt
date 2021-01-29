@@ -1,14 +1,14 @@
 # For LoadBalancer servers use:
 # ansible-playbook 03-deploy-lb-server.yml -i ./inventories/dev/inv-for-websv.txt -e "@configs/dev.yml"
-loadbalancer01 ansible_host=192.168.1.22 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+loadbalancer01 ansible_host=192.168.1.3 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
 
 # For Web servers use:
 # ansible-playbook 02-deploy-webapp-server.yml -i ./inventories/dev/inv-for-websv.txt -e "@configs/dev.yml"
-webserver01 ansible_host=192.168.1.8 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
-webserver02 ansible_host=192.168.1.12 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+webserver01 ansible_host=192.168.1.25 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+webserver02 ansible_host=192.168.1.2 ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
 
-cloudwebserver01 ansible_host=ec2-54-207-212-142.sa-east-1.compute.amazonaws.com ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
-cloudwebserver02 ansible_host=ec2-52-67-147-154.sa-east-1.compute.amazonaws.com ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+cloudwebserver01 ansible_host=ec2-18-231-146-176.sa-east-1.compute.amazonaws.com ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
+cloudwebserver02 ansible_host=ec2-18-228-4-97.sa-east-1.compute.amazonaws.com ansible_user=devops ansible_ssh_private_key_file=../.ssh/id_rsa
 
 [in-house]
 webserver01
